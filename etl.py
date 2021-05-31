@@ -9,12 +9,12 @@ from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, mon
 config = configparser.ConfigParser()
 config.read('dl.cfg')
 
-os.environ['AWS_ACCESS_KEY_ID']=config['KEYS']['AWS_ACCESS_KEY_ID']
-os.environ['AWS_SECRET_ACCESS_KEY']=config['KEYS']['AWS_SECRET_ACCESS_KEY']
+os.environ['AWS_ACCESS_KEY_ID'] = config['KEYS']['AWS_ACCESS_KEY_ID']
+os.environ['AWS_SECRET_ACCESS_KEY'] = config['KEYS']['AWS_SECRET_ACCESS_KEY']
 
 
 def create_spark_session():
-    """Creates a spark session and configure it with needed packages"""    
+    """Creates a spark session and configure it with needed packages"""
 
     spark = SparkSession.builder.config(
         "spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0").getOrCreate()
@@ -29,7 +29,7 @@ def process_song_data(spark, input_data, output_data):
         spark (spark session): spark session to use spark
         input_data (str): path to the input data
         output_data (str): path to the output data
-    """    
+    """
     # get filepath to song data file
     song_data = input_data + 'song_data/A/A/*/*.json'
 
@@ -61,7 +61,7 @@ def process_log_data(spark, input_data, output_data):
         spark (spark session): spark session to use spark
         input_data (str): path to the input data
         output_data (str): path to the output data
-    """   
+    """
     # get filepath to log data file
     log_data = input_data + "log_data/*/*/*.json"
 
@@ -69,8 +69,7 @@ def process_log_data(spark, input_data, output_data):
     df = spark.read.json(log_data)
 
     # filter by actions for song plays
-    df = df.filter(df.page == 'NextSong').select('ts', 'userId', 'level', 'song', 'artist',
-                                                 'sessionId', 'location', 'userAgent')
+    df = df.filter(df.page == 'NextSong')
 
     # extract columns for users table
     users_table = df['userId', 'firstName', 'lastName',
@@ -128,7 +127,7 @@ def process_log_data(spark, input_data, output_data):
 
 def main():
     """Instiate spark session and call process song data then process log data
-    """    
+    """
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
     output_data = "s3a://gharibudacity/"
