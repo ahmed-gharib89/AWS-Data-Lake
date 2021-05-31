@@ -1,4 +1,4 @@
-# Data Modeling with PostgreSQL
+# AWS Spark Data Lake
 
 ## Overview
 
