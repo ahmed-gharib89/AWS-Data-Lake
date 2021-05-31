@@ -31,14 +31,14 @@ def process_song_data(spark, input_data, output_data):
         output_data (str): path to the output data
     """    
     # get filepath to song data file
-    song_data = input_data + 'song_data/*/*/*/*.json'
+    song_data = input_data + 'song_data/A/A/*/*.json'
 
     # read song data file
     df = spark.read.json(song_data)
 
     # extract columns to create songs table
     songs_table = df['song_id', 'title', 'artist_id',
-                     'year', 'duration'].dropDuplicates('song_id')
+                     'year', 'duration'].dropDuplicates(['song_id'])
 
     # write songs table to parquet files partitioned by year and artist
     songs_table.write.partitionBy('year', 'artist_id').parquet(
@@ -46,7 +46,7 @@ def process_song_data(spark, input_data, output_data):
 
     # extract columns to create artists table
     artists_table = df['artist_id', 'artist_name', 'artist_location',
-                       'artist_latitude', 'artist_longitude'].dropDuplicates('artist_id')
+                       'artist_latitude', 'artist_longitude'].dropDuplicates(['artist_id'])
 
     # write artists table to parquet files
     artists_table.write.parquet(os.path.join(
@@ -103,7 +103,7 @@ def process_log_data(spark, input_data, output_data):
         os.path.join(output_data, 'time.parquet'), 'overwrite')
 
     # read in song data to use for songplays table
-    song_df = spark.read.json(input_data + 'song_data/*/*/*/*.json')
+    song_df = spark.read.json(input_data + 'song_data/A/A/*/*.json')
 
     # extract columns from joined song and log datasets to create songplays table
     df = df.join(song_df, song_df.title == df.song)
